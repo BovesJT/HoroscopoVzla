@@ -4,35 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Una Ventana a tu Futuro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Colores inspirados en la imagen mística */
-            --gold-bright: #f1d382; /* Dorado claro para texto */
-            --gold-icon: #d4af37;   /* Dorado base para iconos */
-            --gold-glow: rgba(212, 175, 55, 0.6); /* Resplandor dorado */
-            
-            /* Fondo inspirado en "polvo dorado/nebulosa" */
-            --bg-deep: #050609; /* Negro azulado muy profundo */
-            --bg-mist: #1a1a2e; /* Azul oscuro para degradado */
-            
-            --card-bg: rgba(26, 33, 46, 0.8); /* Fondo de tarjeta semi-transparente */
-            --text-main: #e0e0e0; /* Gris muy claro para lectura */
-            --accent-cyan: #66fcf1; /* Acento místico */
+            --gold-bright: #f9e79f;
+            --gold-icon: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --bg-deep: #050510;
+            --bg-mist: #1a1635;
+            --card-bg: rgba(25, 20, 45, 0.85);
+            --text-main: #e0e4ff;
+            --accent-cyan: #8ff7e2;
             --whatsapp-green: #25D366;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Cinzel', serif; /* Una fuente más mística, si no carga usa la de defecto */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            
-            /* EFECTO NEBULOSA/POLVO DORADO EN EL FONDO */
+            font-family: 'Cormorant Garamond', serif;
             background-color: var(--bg-deep);
             background-image: 
-                radial-gradient(at 10% 10%, rgba(212, 175, 55, 0.15) 0px, transparent 50%), /* Polvo dorado arriba izq */
-                radial-gradient(at 90% 85%, rgba(102, 252, 241, 0.08) 0px, transparent 50%), /* Toque cian abajo der */
+                radial-gradient(circle at center, rgba(66, 57, 125, 0.3) 0%, transparent 70%),
                 linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mist) 100%);
-            background-attachment: fixed; /* Mantiene el fondo quieto al hacer scroll */
-            
+            background-attachment: fixed;
             color: var(--text-main);
             margin: 0;
             padding: 20px;
@@ -40,251 +34,227 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* TÍTULO PRINCIPAL */
-        h1 { 
-            color: var(--gold-bright); 
-            text-transform: uppercase; 
-            letter-spacing: 4px; 
-            margin-bottom: 5px; 
-            font-size: 2em; 
-            text-align: center; 
-            text-shadow: 0 0 15px var(--gold-glow); /* Resplandor dorado */
-        }
-        
-        .subtitle { 
-            font-style: italic; 
-            margin-bottom: 40px; 
-            color: var(--accent-cyan); 
-            font-size: 1.1em; 
-            text-align: center; 
-            text-shadow: 0 0 5px rgba(102, 252, 241, 0.5);
+        /* Estrellas con movimiento más sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 200%; height: 200%;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.15;
+            z-index: 0;
+            animation: starsMove 60s linear infinite;
         }
 
-        /* REJILLA DE SIGNOS */
+        @keyframes starsMove {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-50px, -50px); }
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--gold-bright);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 20px 0 5px;
+            font-size: clamp(1.8em, 5vw, 2.8em);
+            text-align: center;
+            text-shadow: 0 0 20px var(--gold-glow);
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-style: italic;
+            margin-bottom: 40px;
+            color: var(--accent-cyan);
+            font-size: 1.1em;
+            text-align: center;
+            letter-spacing: 2px;
+            z-index: 1;
+        }
+
         .grid-signos {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 15px;
             width: 100%;
             max-width: 900px;
-            margin-bottom: 50px;
+            z-index: 2;
         }
 
-        /* TARJETAS DE SIGNOS (BOTONES) */
         .signo-card {
             background: var(--card-bg);
-            border: 1px solid rgba(212, 175, 55, 0.3); /* Borde dorado sutil */
+            border: 1px solid rgba(255, 215, 0, 0.2);
             padding: 20px 10px;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-            backdrop-filter: blur(3px); /* Efecto cristal esmerilado sutil */
+            backdrop-filter: blur(8px);
+            position: relative;
         }
 
-        /* ICONOS DORADOS (SÍMBOLOS) */
-        .signo-card .simbolo {
-            font-size: 2.8em;
-            color: var(--gold-icon);
-            margin-bottom: 8px;
-            transition: all 0.4s ease;
-            filter: drop-shadow(0 0 5px var(--gold-glow)); /* Resplandor en el icono */
-        }
-
-        .signo-card .nombre {
-            color: var(--gold-bright);
-            font-weight: bold;
-            font-size: 1em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            transition: all 0.4s ease;
-        }
-
-        /* EFECTO HOVER (AL PASAR EL MOUSE) */
         .signo-card:hover {
-            border-color: var(--gold-bright);
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
-            background: rgba(212, 175, 55, 0.1); /* Tinte dorado al fondo */
+            border-color: var(--gold-icon);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow);
         }
-        
+
+        .simbolo {
+            font-size: 3em;
+            color: var(--gold-icon);
+            display: block;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 10px var(--gold-glow));
+            transition: transform 0.4s;
+        }
+
         .signo-card:hover .simbolo {
-            color: #ffffff; /* El icono se vuelve blanco brillante */
-            filter: drop-shadow(0 0 10px #ffffff);
-        }
-        
-        .signo-card:hover .nombre {
-            color: #ffffff;
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 15px var(--gold-icon));
         }
 
-        /* ÁREA DE PREDICCIÓN */
+        .nombre {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.85em;
+            color: var(--gold-bright);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ÁREA DE PREDICCIÓN MEJORADA */
         #prediction-area {
-            max-width: 650px;
+            max-width: 700px;
             width: 100%;
-            background: var(--card-bg);
-            padding: 35px;
+            background: rgba(20, 15, 40, 0.95);
+            padding: 30px;
             border-radius: 20px;
+            margin-top: 40px;
             border: 1px solid var(--gold-icon);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,215,0,0.1);
             display: none;
-            animation: fadeInMistic 0.8s ease-out;
-            box-sizing: border-box;
-            backdrop-filter: blur(5px);
-            margin-bottom: 30px;
+            z-index: 10;
+            position: relative;
         }
 
-        @keyframes fadeInMistic { 
-            from { opacity: 0; transform: translateY(20px); filter: blur(5px); } 
-            to { opacity: 1; transform: translateY(0); filter: blur(0); } 
+        /* Ritual de carga (Blur animation) */
+        .loading {
+            filter: blur(10px);
+            opacity: 0.5;
+            transition: all 0.6s ease;
         }
 
-        .section-title { 
-            color: var(--accent-cyan); 
-            font-weight: bold; 
-            margin-top: 20px; 
+        .section-title {
+            color: var(--accent-cyan);
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.1em;
+            margin-top: 25px;
             display: flex;
             align-items: center;
-            font-size: 1.2em; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: var(--accent-cyan);
-            border-radius: 50%;
-            margin-right: 10px;
-            box-shadow: 0 0 5px var(--accent-cyan);
-        }
-        
-        #amor-text, #trabajo-text {
-            margin-top: 8px; 
-            line-height: 1.7; 
-            color: var(--text-main);
-            font-size: 1.05em;
+            border-bottom: 1px solid rgba(143, 247, 226, 0.2);
+            padding-bottom: 5px;
         }
 
-        /* METADATOS (NÚMERO Y COLOR) */
+        .section-title::before { content: '✧'; margin-right: 10px; }
+
+        #amor-text, #trabajo-text {
+            line-height: 1.7;
+            font-size: 1.15em;
+            margin: 10px 0;
+            color: #f0f0f0;
+        }
+
         .meta-box {
             display: flex;
             justify-content: space-around;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
             flex-wrap: wrap;
             gap: 15px;
-        }
-
-        .meta-item {
-            font-size: 1em;
-            color: var(--gold-bright);
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 15px;
         }
 
         .badge {
-            background: rgba(69, 162, 158, 0.2);
             color: var(--accent-cyan);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 1em;
             font-weight: bold;
             border: 1px solid var(--accent-cyan);
-            margin-left: 5px;
-            text-shadow: 0 0 3px var(--accent-cyan);
+            padding: 5px 15px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(143, 247, 226, 0.2);
         }
 
-        /* BOTÓN WHATSAPP */
         #share-whatsapp {
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin-top: 30px;
-            background-color: transparent;
-            color: var(--whatsapp-green);
-            border: 2px solid var(--whatsapp-green);
-            padding: 12px 25px;
-            border-radius: 50px;
+            align-items: center;
             text-decoration: none;
+            color: white;
+            background: var(--whatsapp-green);
+            padding: 12px;
+            border-radius: 50px;
+            margin-top: 30px;
             font-weight: bold;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
         }
 
-        #share-whatsapp:hover {
-            background-color: var(--whatsapp-green);
-            color: #ffffff;
-            box-shadow: 0 0 15px rgba(37, 211, 102, 0.5);
-        }
-        
-        /* Ajuste responsive para Capricornio y móviles */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.6em; }
-            .grid-signos { grid-template-columns: repeat(2, 1fr); }
-            .signo-card .nombre { font-size: 0.85em; }
+        #share-whatsapp:hover { transform: scale(1.05); }
+
+        @media (max-width: 600px) {
+            .grid-signos { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .simbolo { font-size: 2.2em; }
+            .nombre { font-size: 0.7em; }
+            h1 { font-size: 1.5em; }
         }
     </style>
 </head>
 <body>
 
     <h1>Una Ventana a tu Futuro</h1>
-    <p class="subtitle">Descubre el diseño místico que los astros han revelado</p>
-
+    <p class="subtitle">La sabiduría de los astros en tu mano</p>
+    
     <div class="grid-signos" id="grid"></div>
 
     <div id="prediction-area">
-        <h2 id="selected-sign" style="color: var(--gold-bright); margin-top: 0; text-align: center; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--gold-glow);"></h2>
+        <h2 id="selected-sign" style="color: var(--gold-bright); text-align: center; font-family: 'Cinzel Decorative';"></h2>
         
-        <span class="section-title">Amor y Relaciones</span>
+        <span class="section-title">Amor y Destino</span>
         <p id="amor-text"></p>
-
-        <span class="section-title">Trabajo y Finanzas</span>
+        
+        <span class="section-title">Prosperidad</span>
         <p id="trabajo-text"></p>
-
+        
         <div class="meta-box">
-            <div class="meta-item">🔢 Número de la Suerte: <span id="num-luck" class="badge"></span></div>
-            <div class="meta-item">🎨 Color Vibracional: <span id="color-luck" class="badge"></span></div>
+            <div class="meta-item">🔢 Número: <span id="num-luck" class="badge"></span></div>
+            <div class="meta-item">🎨 Color: <span id="color-luck" class="badge"></span></div>
         </div>
-
-        <a href="#" id="share-whatsapp" target="_blank">
-            <svg style="width:20px;height:20px;margin-right:10px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.39-4.19-1.14l-.3-.17l-3.12.82l.83-3.04l-.2-.32a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24m-3.9 3.18c-.21 0-.39.08-.55.24c-.17.16-.44.42-.44.91c0 .5.33 1 .41 1.11c.08.1.64 1.1 1.62 1.94c.81.69 1.48.92 2.03 1.09c.42.12.8.1 1.11-.04c.34-.15.8-.32.9-.64c.1-.33.1-.61.07-.66c-.03-.06-.13-.1-.28-.17c-.15-.08-.9-.44-1.04-.49c-.14-.05-.24-.07-.34.08c-.1.15-.39.49-.47.61c-.08.11-.17.13-.32.05c-.15-.07-.64-.24-1.21-.75c-.45-.39-.75-.88-.84-1.03c-.09-.15-.01-.23.07-.3c.07-.07.15-.17.23-.26c.07-.09.1-.15.15-.25c.05-.1.02-.19-.01-.26c-.03-.07-.34-.82-.47-1.12c-.12-.3-.25-.26-.34-.26Z" /></svg>
-            Compartir Destino
-        </a>
+        
+        <a href="#" id="share-whatsapp" target="_blank">Compartir mi destino</a>
     </div>
 
 <script>
-    // DATOS GENERADOS POR IA (MISMOS DATOS)
     const horoscopoData = {
-        "Aries": { simbolo: "♈", amor: "La energía de Marte te impulsa a tomar la iniciativa. Si tienes pareja, evita discusiones por pequeñeces.", trabajo: "Semana de cierres exitosos. Un dinero extra llega por un proyecto que creías olvidado.", numero: "7", color: "Rojo Escarlata" },
-        "Tauro": { simbolo: "♉", amor: "Es momento de salir de la zona de confort. Una conversación honesta sanará heridas del pasado.", trabajo: "Cuidado con los gastos impulsivos. En la oficina, tu paciencia será tu mayor virtud hoy.", numero: "22", color: "Verde Esmeralda" },
-        "Géminis": { simbolo: "♊", amor: "Tu carisma está en su punto máximo. Alguien nuevo aparecerá en un entorno social inesperado.", trabajo: "La comunicación es clave. Expresa tus ideas en la reunión; tus jefes están escuchando.", numero: "5", color: "Amarillo Brillante" },
-        "Cáncer": { simbolo: "♋", amor: "Tu intuición no falla. Protege tu energía y rodéate de personas que te den paz mental.", trabajo: "Se abren puertas en el extranjero o en nuevas áreas. Confía en tu talento creativo.", numero: "11", color: "Blanco Plata" },
-        "Leo": { simbolo: "♌", amor: "Brillarás con luz propia. El amor propio será la base para que otros se sientan atraídos por ti.", trabajo: "Liderazgo natural. Recibirás reconocimiento por un esfuerzo que hiciste meses atrás.", numero: "1", color: "Dorado" },
-        "Virgo": { simbolo: "♍", amor: "Deja de analizar tanto los sentimientos y permítete sentir. La perfección no existe en el amor.", trabajo: "Organización total. Tu eficiencia permitirá que termines la semana sin estrés acumulado.", numero: "9", color: "Marrón Tierra" },
-        "Libra": { simbolo: "♎", amor: "El equilibrio regresa a tu vida sentimental. Buen momento para reconciliaciones o acuerdos.", trabajo: "Asociaciones favorables. Trabajar en equipo te traerá mejores beneficios que hacerlo solo.", numero: "6", color: "Rosa Pastel" },
-        "Escorpio": { simbolo: "♏", amor: "Pasión e intensidad. No temas profundizar en tus deseos; tu magnetismo está muy alto.", trabajo: "Transformación profesional. Un cambio de rol o de mentalidad te dará la libertad que buscas.", numero: "13", color: "Negro Místico" },
-        "Sagitario": { simbolo: "♐", amor: "Aventura a la vista. Un viaje corto o salida al aire libre renovará tu conexión especial.", trabajo: "Optimismo renovado. Tu visión a largo plazo inspira a tus colegas. Sigue así.", numero: "3", color: "Violeta" },
-        "Capricornio": { simbolo: "♑", amor: "Construyes sobre bases sólidas. La lealtad será el tema principal de tus relaciones esta semana.", trabajo: "Disciplina y enfoque. Estás cerca de alcanzar una meta financiera importante. No te distraigas.", numero: "8", color: "Gris Plomo" },
-        "Acuario": { simbolo: "♒", amor: "Sorpresas en el ámbito social. Un amigo podría confesarte sentimientos que no imaginabas.", trabajo: "Innovación. Tu forma de resolver problemas dejará a todos sorprendidos. Usa la tecnología a tu favor.", numero: "2", color: "Azul Turquesa" },
-        "Piscis": { simbolo: "♓", amor: "Semana romántica y soñadora. Déjate llevar por la música y el arte junto a quien quieres.", trabajo: "Confía en tu voz interior antes de firmar cualquier documento. La creatividad será tu motor.", numero: "18", color: "Celeste" }
+        "Aries": { simbolo: "♈", amor: "La pasión se desborda, pero cuidado con las palabras impulsivas. Un gesto tierno cambiará tu noche.", trabajo: "Tu ambición está en racha. Es el día perfecto para proponer esa idea que te ronda la cabeza.", numero: "7", color: "Rojo Escarlata" },
+        "Tauro": { simbolo: "♉", amor: "La calma regresa. Un momento de paz con alguien querido te recargará el alma.", trabajo: "Cosechas lo que siembras. Un reconocimiento inesperado por tu constancia llegará pronto.", numero: "22", color: "Verde Esmeralda" },
+        "Géminis": { simbolo: "♊", amor: "Tu dualidad te permite entender a otros hoy. Escucha más de lo que hablas y atraerás lo que buscas.", trabajo: "Nuevas conexiones traen oportunidades. Una llamada o mensaje abrirá una puerta cerrada.", numero: "5", color: "Amarillo" },
+        "Cáncer": { simbolo: "♋", amor: "Protege tu corazón pero no lo cierres. Alguien cercano necesita tu luz y empatía.", trabajo: "Tu intuición financiera es aguda hoy. Confía en ese presentimiento sobre un gasto.", numero: "11", color: "Plata" },
+        "Leo": { simbolo: "♌", amor: "Brillarás tanto que podrías cegar. Asegúrate de compartir el protagonismo con tu pareja.", trabajo: "Liderazgo natural. El equipo seguirá tu ritmo si les muestras el camino con generosidad.", numero: "1", color: "Dorado" },
+        "Virgo": { simbolo: "♍", amor: "La perfección no existe, pero los momentos hermosos sí. Deja de analizar y siente más.", trabajo: "Detalles que otros pasan por alto serán tu clave del éxito hoy. Tu orden da frutos.", numero: "9", color: "Marrón" },
+        "Libra": { simbolo: "♎", amor: "La armonía es tu norte. Un conflicto se resuelve gracias a tu capacidad de mediación.", trabajo: "Semana de equilibrio. No te sobreexijas, el trabajo saldrá mejor si descansas un poco.", numero: "6", color: "Rosa" },
+        "Escorpio": { simbolo: "♏", amor: "Intensidad total. Un secreto sale a la luz, pero será para liberar tensiones.", trabajo: "Transformación. Estás dejando atrás un método viejo para abrazar algo mucho más rentable.", numero: "13", color: "Granate" },
+        "Sagitario": { simbolo: "♐", amor: "La aventura llama. Un encuentro fuera de tu zona de confort te hará sonreír.", trabajo: "Expansión. Tu visión de futuro es clara. No dejes que las dudas ajenas te detengan.", numero: "3", color: "Violeta" },
+        "Capricornio": { simbolo: "♑", amor: "Construyes cimientos fuertes. La lealtad de alguien te demostrará que vas por buen camino.", trabajo: "Disciplina de acero. Estás a un paso de esa meta financiera; no bajes la guardia.", numero: "8", color: "Gris" },
+        "Acuario": { simbolo: "♒", amor: "Libertad y conexión. Disfrutarás de tu espacio sin perder la cercanía con los tuyos.", trabajo: "Originalidad premiada. Tu enfoque poco convencional es justo lo que el proyecto necesita.", numero: "2", color: "Turquesa" },
+        "Piscis": { simbolo: "♓", amor: "Navegas en aguas románticas. Tu sensibilidad atraerá a alguien muy especial hoy.", trabajo: "Creatividad sin límites. Dedica tiempo a lo artístico; allí reside tu verdadera abundancia.", numero: "18", color: "Celeste" }
     };
 
     const grid = document.getElementById('grid');
     const area = document.getElementById('prediction-area');
     const whatsappBtn = document.getElementById('share-whatsapp');
 
-    // Crear los botones de los signos con símbolos
     Object.keys(horoscopoData).forEach(signo => {
         const data = horoscopoData[signo];
         const div = document.createElement('div');
@@ -296,25 +266,25 @@
 
     function mostrarPrediccion(s) {
         const data = horoscopoData[s];
-        document.getElementById('selected-sign').innerText = `${data.simbolo} ${s}`;
-        document.getElementById('amor-text').innerText = data.amor;
-        document.getElementById('trabajo-text').innerText = data.trabajo;
-        document.getElementById('num-luck').innerText = data.numero;
-        document.getElementById('color-luck').innerText = data.color;
         
-        // Configurar el mensaje de WhatsApp (con formato negrita)
-        const mensaje = `✨ *Una Ventana a tu Futuro* ✨\n\nMi destino para *${s}* esta semana:\n\n❤️ *Amor:* ${data.amor}\n💼 *Trabajo:* ${data.trabajo}\n🔢 *Número:* ${data.numero}\n🎨 *Color:* ${data.color}\n\nDescubre el tuyo aquí: ${window.location.href}`;
-        whatsappBtn.href = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
-        
-        // Mostrar área con animación
+        // Efecto de carga mística
         area.style.display = 'block';
+        area.classList.add('loading');
         
-        // Scroll suave hacia la predicción
         setTimeout(() => {
+            document.getElementById('selected-sign').innerText = `${data.simbolo} ${s}`;
+            document.getElementById('amor-text').innerText = data.amor;
+            document.getElementById('trabajo-text').innerText = data.trabajo;
+            document.getElementById('num-luck').innerText = data.numero;
+            document.getElementById('color-luck').innerText = data.color;
+            
+            const mensaje = `✨ *Una Ventana a tu Futuro* ✨\n\nMi destino para *${s}*:\n❤️ *Amor:* ${data.amor}\n💼 *Trabajo:* ${data.trabajo}\n🔢 *Número:* ${data.numero}\n\nMíralo aquí: ${window.location.href}`;
+            whatsappBtn.href = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+            
+            area.classList.remove('loading');
             window.scrollTo({ top: area.offsetTop - 20, behavior: 'smooth' });
-        }, 100);
+        }, 400); // Pequeño delay para el "ritual" de la IA
     }
 </script>
-
 </body>
 </html>
