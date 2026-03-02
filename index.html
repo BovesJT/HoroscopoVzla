@@ -149,5 +149,10 @@
     }
 </script>
 
+// Añade esto al final de tu función mostrarPrediccion(s)
+const mensaje = `Mi horóscopo para ${s} hoy: Amor: ${data.amor} | Número: ${data.numero}. Míralo aquí: ${window.location.href}`;
+const urlWhatsapp = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+// Podrías crear un botón en el HTML y asignarle esta URL
+    
 </body>
 </html>
