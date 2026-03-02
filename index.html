@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horóscopo IA - Destino Diario</title>
+    <title>Una Ventana a tu Futuro</title>
     <style>
         :root {
             --gold: #d4af37;
@@ -11,6 +11,7 @@
             --card-bg: #1f2833;
             --text-color: #c5c6c7;
             --accent: #66fcf1;
+            --whatsapp-green: #25D366;
         }
 
         body {
@@ -24,33 +25,53 @@
             align-items: center;
         }
 
-        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
-        .subtitle { font-style: italic; margin-bottom: 30px; color: var(--accent); }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-size: 1.8em; text-align: center; }
+        .subtitle { font-style: italic; margin-bottom: 30px; color: var(--accent); font-size: 1em; text-align: center; }
 
         .grid-signos {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Ancho mínimo ajustado */
+            gap: 12px;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             margin-bottom: 40px;
         }
 
         .signo-card {
             background: var(--card-bg);
             border: 1px solid var(--gold);
-            padding: 15px;
+            padding: 15px 10px; /* Ajuste de padding */
             border-radius: 10px;
             cursor: pointer;
             transition: 0.3s;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box; /* Asegura que el padding no agrande el botón */
+        }
+
+        .signo-card .simbolo {
+            font-size: 2em;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .signo-card .nombre {
             font-weight: bold;
+            font-size: 0.9em;
+            white-space: nowrap; /* Evita que el nombre se corte en dos líneas */
         }
 
         .signo-card:hover {
             background: var(--gold);
-            color: black;
             transform: translateY(-5px);
+        }
+        
+        .signo-card:hover .simbolo,
+        .signo-card:hover .nombre {
+            color: black;
         }
 
         #prediction-area {
@@ -62,18 +83,21 @@
             border-top: 4px solid var(--gold);
             display: none;
             animation: fadeIn 0.5s ease;
+            box-sizing: border-box;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .section-title { color: var(--accent); font-weight: bold; margin-top: 15px; display: block; }
+        .section-title { color: var(--accent); font-weight: bold; margin-top: 15px; display: block; font-size: 1.1em; }
         
         .meta-box {
             display: flex;
             justify-content: space-between;
             margin-top: 25px;
             padding-top: 15px;
-            border-top: 1px border var(--text-color);
+            border-top: 1px solid rgba(197, 198, 199, 0.3);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .badge {
@@ -82,77 +106,98 @@
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        #share-whatsapp {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: var(--whatsapp-green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        #share-whatsapp:hover {
+            background-color: #1ebe57;
         }
     </style>
 </head>
 <body>
 
-    <h1>✨ Oráculo IA ✨</h1>
-    <p class="subtitle">Tu destino para esta semana, revelado por la inteligencia astral</p>
+    <h1>✨ Una Ventana a tu Futuro ✨</h1>
+    <p class="subtitle">Descubre lo que los astros tienen preparado para ti esta semana</p>
 
     <div class="grid-signos" id="grid"></div>
 
     <div id="prediction-area">
-        <h2 id="selected-sign" style="color: var(--gold);"></h2>
+        <h2 id="selected-sign" style="color: var(--gold); margin-top: 0;"></h2>
         
         <span class="section-title">❤️ Amor</span>
-        <p id="amor-text"></p>
+        <p id="amor-text" style="margin-top: 5px; line-height: 1.5;"></p>
 
         <span class="section-title">💼 Trabajo y Dinero</span>
-        <p id="trabajo-text"></p>
+        <p id="trabajo-text" style="margin-top: 5px; line-height: 1.5;"></p>
 
         <div class="meta-box">
             <div>🔢 Número: <span id="num-luck" class="badge"></span></div>
             <div>🎨 Color: <span id="color-luck" class="badge"></span></div>
         </div>
+
+        <a href="#" id="share-whatsapp" target="_blank">Compartir mi destino por WhatsApp</a>
     </div>
 
 <script>
-    // DATOS GENERADOS POR IA PARA LA SEMANA
+    // DATOS GENERADOS POR IA CON SÍMBOLOS
     const horoscopoData = {
-        "Aries": { amor: "La energía de Marte te impulsa a tomar la iniciativa. Si tienes pareja, evita discusiones por pequeñeces.", trabajo: "Semana de cierres exitosos. Un dinero extra llega por un proyecto que creías olvidado.", numero: "7", color: "Rojo Escarlata" },
-        "Tauro": { amor: "Es momento de salir de la zona de confort. Una conversación honesta sanará heridas del pasado.", trabajo: "Cuidado con los gastos impulsivos. En la oficina, tu paciencia será tu mayor virtud hoy.", numero: "22", color: "Verde Esmeralda" },
-        "Géminis": { amor: "Tu carisma está en su punto máximo. Alguien nuevo aparecerá en un entorno social inesperado.", trabajo: "La comunicación es clave. Expresa tus ideas en la reunión; tus jefes están escuchando.", numero: "5", color: "Amarillo Brillante" },
-        "Cáncer": { amor: "Tu intuición no falla. Protege tu energía y rodéate de personas que te den paz mental.", trabajo: "Se abren puertas en el extranjero o en nuevas áreas. Confía en tu talento creativo.", numero: "11", color: "Blanco Plata" },
-        "Leo": { amor: "Brillarás con luz propia. El amor propio será la base para que otros se sientan atraídos por ti.", trabajo: "Liderazgo natural. Recibirás reconocimiento por un esfuerzo que hiciste meses atrás.", numero: "1", color: "Dorado" },
-        "Virgo": { amor: "Deja de analizar tanto los sentimientos y permítete sentir. La perfección no existe en el amor.", trabajo: "Organización total. Tu eficiencia permitirá que termines la semana sin estrés acumulado.", numero: "9", color: "Marrón Tierra" },
-        "Libra": { amor: "El equilibrio regresa a tu vida sentimental. Buen momento para reconciliaciones o acuerdos.", trabajo: "Asociaciones favorables. Trabajar en equipo te traerá mejores beneficios que hacerlo solo.", numero: "6", color: "Rosa Pastel" },
-        "Escorpio": { amor: "Pasión e intensidad. No temas profundizar en tus deseos; tu magnetismo está muy alto.", trabajo: "Transformación profesional. Un cambio de rol o de mentalidad te dará la libertad que buscas.", numero: "13", color: "Negro Místico" },
-        "Sagitario": { amor: "Aventura a la vista. Un viaje corto o salida al aire libre renovará tu conexión especial.", trabajo: "Optimismo renovado. Tu visión a largo plazo inspira a tus colegas. Sigue así.", numero: "3", color: "Violeta" },
-        "Capricornio": { amor: "Construyes sobre bases sólidas. La lealtad será el tema principal de tus relaciones esta semana.", trabajo: "Disciplina y enfoque. Estás cerca de alcanzar una meta financiera importante. No te distraigas.", numero: "8", color: "Gris Plomo" },
-        "Acuario": { amor: "Sorpresas en el ámbito social. Un amigo podría confesarte sentimientos que no imaginabas.", trabajo: "Innovación. Tu forma de resolver problemas dejará a todos sorprendidos. Usa la tecnología a tu favor.", numero: "2", color: "Azul Turquesa" },
-        "Piscis": { amor: "Semana romántica y soñadora. Déjate llevar por la música y el arte junto a quien quieres.", trabajo: "Confía en tu voz interior antes de firmar cualquier documento. La creatividad será tu motor.", numero: "18", color: "Celeste" }
+        "Aries": { simbolo: "♈", amor: "La energía de Marte te impulsa a tomar la iniciativa. Si tienes pareja, evita discusiones por pequeñeces.", trabajo: "Semana de cierres exitosos. Un dinero extra llega por un proyecto que creías olvidado.", numero: "7", color: "Rojo Escarlata" },
+        "Tauro": { simbolo: "♉", amor: "Es momento de salir de la zona de confort. Una conversación honesta sanará heridas del pasado.", trabajo: "Cuidado con los gastos impulsivos. En la oficina, tu paciencia será tu mayor virtud hoy.", numero: "22", color: "Verde Esmeralda" },
+        "Géminis": { simbolo: "♊", amor: "Tu carisma está en su punto máximo. Alguien nuevo aparecerá en un entorno social inesperado.", trabajo: "La comunicación es clave. Expresa tus ideas en la reunión; tus jefes están escuchando.", numero: "5", color: "Amarillo Brillante" },
+        "Cáncer": { simbolo: "♋", amor: "Tu intuición no falla. Protege tu energía y rodéate de personas que te den paz mental.", trabajo: "Se abren puertas en el extranjero o en nuevas áreas. Confía en tu talento creativo.", numero: "11", color: "Blanco Plata" },
+        "Leo": { simbolo: "♌", amor: "Brillarás con luz propia. El amor propio será la base para que otros se sientan atraídos por ti.", trabajo: "Liderazgo natural. Recibirás reconocimiento por un esfuerzo que hiciste meses atrás.", numero: "1", color: "Dorado" },
+        "Virgo": { simbolo: "♍", amor: "Deja de analizar tanto los sentimientos y permítete sentir. La perfección no existe en el amor.", trabajo: "Organización total. Tu eficiencia permitirá que termines la semana sin estrés acumulado.", numero: "9", color: "Marrón Tierra" },
+        "Libra": { simbolo: "♎", amor: "El equilibrio regresa a tu vida sentimental. Buen momento para reconciliaciones o acuerdos.", trabajo: "Asociaciones favorables. Trabajar en equipo te traerá mejores beneficios que hacerlo solo.", numero: "6", color: "Rosa Pastel" },
+        "Escorpio": { simbolo: "♏", amor: "Pasión e intensidad. No temas profundizar en tus deseos; tu magnetismo está muy alto.", trabajo: "Transformación profesional. Un cambio de rol o de mentalidad te dará la libertad que buscas.", numero: "13", color: "Negro Místico" },
+        "Sagitario": { simbolo: "♐", amor: "Aventura a la vista. Un viaje corto o salida al aire libre renovará tu conexión especial.", trabajo: "Optimismo renovado. Tu visión a largo plazo inspira a tus colegas. Sigue así.", numero: "3", color: "Violeta" },
+        "Capricornio": { simbolo: "♑", amor: "Construyes sobre bases sólidas. La lealtad será el tema principal de tus relaciones esta semana.", trabajo: "Disciplina y enfoque. Estás cerca de alcanzar una meta financiera importante. No te distraigas.", numero: "8", color: "Gris Plomo" },
+        "Acuario": { simbolo: "♒", amor: "Sorpresas en el ámbito social. Un amigo podría confesarte sentimientos que no imaginabas.", trabajo: "Innovación. Tu forma de resolver problemas dejará a todos sorprendidos. Usa la tecnología a tu favor.", numero: "2", color: "Azul Turquesa" },
+        "Piscis": { simbolo: "♓", amor: "Semana romántica y soñadora. Déjate llevar por la música y el arte junto a quien quieres.", trabajo: "Confía en tu voz interior antes de firmar cualquier documento. La creatividad será tu motor.", numero: "18", color: "Celeste" }
     };
 
     const grid = document.getElementById('grid');
     const area = document.getElementById('prediction-area');
+    const whatsappBtn = document.getElementById('share-whatsapp');
 
-    // Crear los botones de los signos
+    // Crear los botones de los signos con símbolos
     Object.keys(horoscopoData).forEach(signo => {
+        const data = horoscopoData[signo];
         const div = document.createElement('div');
         div.className = 'signo-card';
-        div.innerText = signo;
+        div.innerHTML = `<span class="simbolo">${data.simbolo}</span><span class="nombre">${signo}</span>`;
         div.onclick = () => mostrarPrediccion(signo);
         grid.appendChild(div);
     });
 
     function mostrarPrediccion(s) {
         const data = horoscopoData[s];
-        document.getElementById('selected-sign').innerText = s;
+        document.getElementById('selected-sign').innerText = `${data.simbolo} ${s}`;
         document.getElementById('amor-text').innerText = data.amor;
         document.getElementById('trabajo-text').innerText = data.trabajo;
         document.getElementById('num-luck').innerText = data.numero;
         document.getElementById('color-luck').innerText = data.color;
+        
+        // Configurar el mensaje de WhatsApp
+        const mensaje = `✨ *Mi destino para ${s} esta semana:* \n\n❤️ *Amor:* ${data.amor}\n💼 *Trabajo:* ${data.trabajo}\n🔢 *Número:* ${data.numero}\n🎨 *Color:* ${data.color}\n\nDescubre el tuyo aquí: ${window.location.href}`;
+        whatsappBtn.href = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
         
         area.style.display = 'block';
         window.scrollTo({ top: area.offsetTop, behavior: 'smooth' });
     }
 </script>
 
-// Añade esto al final de tu función mostrarPrediccion(s)
-const mensaje = `Mi horóscopo para ${s} hoy: Amor: ${data.amor} | Número: ${data.numero}. Míralo aquí: ${window.location.href}`;
-const urlWhatsapp = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
-// Podrías crear un botón en el HTML y asignarle esta URL
-    
 </body>
 </html>
