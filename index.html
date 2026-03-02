@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horóscopo IA - Destino Diario</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0b0c10;
+            --card-bg: #1f2833;
+            --text-color: #c5c6c7;
+            --accent: #66fcf1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
+        .subtitle { font-style: italic; margin-bottom: 30px; color: var(--accent); }
+
+        .grid-signos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .signo-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gold);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .signo-card:hover {
+            background: var(--gold);
+            color: black;
+            transform: translateY(-5px);
+        }
+
+        #prediction-area {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border-top: 4px solid var(--gold);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .section-title { color: var(--accent); font-weight: bold; margin-top: 15px; display: block; }
+        
+        .meta-box {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px border var(--text-color);
+        }
+
+        .badge {
+            background: #45a29e;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ Oráculo IA ✨</h1>
+    <p class="subtitle">Tu destino para esta semana, revelado por la inteligencia astral</p>
+
+    <div class="grid-signos" id="grid"></div>
+
+    <div id="prediction-area">
+        <h2 id="selected-sign" style="color: var(--gold);"></h2>
+        
+        <span class="section-title">❤️ Amor</span>
+        <p id="amor-text"></p>
+
+        <span class="section-title">💼 Trabajo y Dinero</span>
+        <p id="trabajo-text"></p>
+
+        <div class="meta-box">
+            <div>🔢 Número: <span id="num-luck" class="badge"></span></div>
+            <div>🎨 Color: <span id="color-luck" class="badge"></span></div>
+        </div>
+    </div>
+
+<script>
+    // DATOS GENERADOS POR IA PARA LA SEMANA
+    const horoscopoData = {
+        "Aries": { amor: "La energía de Marte te impulsa a tomar la iniciativa. Si tienes pareja, evita discusiones por pequeñeces.", trabajo: "Semana de cierres exitosos. Un dinero extra llega por un proyecto que creías olvidado.", numero: "7", color: "Rojo Escarlata" },
+        "Tauro": { amor: "Es momento de salir de la zona de confort. Una conversación honesta sanará heridas del pasado.", trabajo: "Cuidado con los gastos impulsivos. En la oficina, tu paciencia será tu mayor virtud hoy.", numero: "22", color: "Verde Esmeralda" },
+        "Géminis": { amor: "Tu carisma está en su punto máximo. Alguien nuevo aparecerá en un entorno social inesperado.", trabajo: "La comunicación es clave. Expresa tus ideas en la reunión; tus jefes están escuchando.", numero: "5", color: "Amarillo Brillante" },
+        "Cáncer": { amor: "Tu intuición no falla. Protege tu energía y rodéate de personas que te den paz mental.", trabajo: "Se abren puertas en el extranjero o en nuevas áreas. Confía en tu talento creativo.", numero: "11", color: "Blanco Plata" },
+        "Leo": { amor: "Brillarás con luz propia. El amor propio será la base para que otros se sientan atraídos por ti.", trabajo: "Liderazgo natural. Recibirás reconocimiento por un esfuerzo que hiciste meses atrás.", numero: "1", color: "Dorado" },
+        "Virgo": { amor: "Deja de analizar tanto los sentimientos y permítete sentir. La perfección no existe en el amor.", trabajo: "Organización total. Tu eficiencia permitirá que termines la semana sin estrés acumulado.", numero: "9", color: "Marrón Tierra" },
+        "Libra": { amor: "El equilibrio regresa a tu vida sentimental. Buen momento para reconciliaciones o acuerdos.", trabajo: "Asociaciones favorables. Trabajar en equipo te traerá mejores beneficios que hacerlo solo.", numero: "6", color: "Rosa Pastel" },
+        "Escorpio": { amor: "Pasión e intensidad. No temas profundizar en tus deseos; tu magnetismo está muy alto.", trabajo: "Transformación profesional. Un cambio de rol o de mentalidad te dará la libertad que buscas.", numero: "13", color: "Negro Místico" },
+        "Sagitario": { amor: "Aventura a la vista. Un viaje corto o salida al aire libre renovará tu conexión especial.", trabajo: "Optimismo renovado. Tu visión a largo plazo inspira a tus colegas. Sigue así.", numero: "3", color: "Violeta" },
+        "Capricornio": { amor: "Construyes sobre bases sólidas. La lealtad será el tema principal de tus relaciones esta semana.", trabajo: "Disciplina y enfoque. Estás cerca de alcanzar una meta financiera importante. No te distraigas.", numero: "8", color: "Gris Plomo" },
+        "Acuario": { amor: "Sorpresas en el ámbito social. Un amigo podría confesarte sentimientos que no imaginabas.", trabajo: "Innovación. Tu forma de resolver problemas dejará a todos sorprendidos. Usa la tecnología a tu favor.", numero: "2", color: "Azul Turquesa" },
+        "Piscis": { amor: "Semana romántica y soñadora. Déjate llevar por la música y el arte junto a quien quieres.", trabajo: "Confía en tu voz interior antes de firmar cualquier documento. La creatividad será tu motor.", numero: "18", color: "Celeste" }
+    };
+
+    const grid = document.getElementById('grid');
+    const area = document.getElementById('prediction-area');
+
+    // Crear los botones de los signos
+    Object.keys(horoscopoData).forEach(signo => {
+        const div = document.createElement('div');
+        div.className = 'signo-card';
+        div.innerText = signo;
+        div.onclick = () => mostrarPrediccion(signo);
+        grid.appendChild(div);
+    });
+
+    function mostrarPrediccion(s) {
+        const data = horoscopoData[s];
+        document.getElementById('selected-sign').innerText = s;
+        document.getElementById('amor-text').innerText = data.amor;
+        document.getElementById('trabajo-text').innerText = data.trabajo;
+        document.getElementById('num-luck').innerText = data.numero;
+        document.getElementById('color-luck').innerText = data.color;
+        
+        area.style.display = 'block';
+        window.scrollTo({ top: area.offsetTop, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
